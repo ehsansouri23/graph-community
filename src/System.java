@@ -10,50 +10,66 @@ public class System {
 
     public void start() {
 
-        int n = numnodes();
-        myGraph = new Graph(n);
-        java.lang.System.out.print("dfsfs");
-        init();
-        int count = 0;
+        float NMI = 0;
+        double time = 0;
 
-       // java.lang.System.out.println(myGraph);
-        boolean b = true;
-        while(b && count < 7 ) {
-            Graph.numChange = 0;
-            myGraph.propagation();
+        int nn = 0;
+        while (nn < 100) {
+
+            int n = numnodes();
+            myGraph = new Graph(n);
+            init();
+            int count = 0;
+            double aa = 0, bb = 0;
+
+            // java.lang.System.out.println(myGraph);
+            boolean b = true;
+            while (b && count < 7) {
+                aa = java.lang.System.currentTimeMillis();
+                Graph.numChange = 0;
+                myGraph.propagation();
             myGraph.inflation(3);
             myGraph.cutoff(0.1);
-           // java.lang.System.out.println(myGraph);
-            java.lang.System.out.println(count);
             myGraph.update(0.7);
-            b = !myGraph.stop();
-            count++;
+                b = !myGraph.stop();
+                count++;
+                bb = java.lang.System.currentTimeMillis();
+            }
+            myGraph.setResult();
+            time += (bb - aa);
+            Test test = new Test();
+            try {
+                NMI = test.NMI(myGraph.result, "/home/ehsan/Desktop/T/TestCase14-N100000-k20-mu50/community.txt");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            nn++;
+            java.lang.System.out.println("time is calculated " + time);
         }
-         myGraph.setResult();
-        Test test = new Test();
-        float NMI = 0;
-        try {
-            NMI = test.NMI(myGraph.result , "C:\\Users\\ehsan\\Desktop\\N1000MU.5\\community.txt");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        java.lang.System.out.print(NMI);
-        java.lang.System.out.println(myGraph);
+        java.lang.System.out.println("n is " + nn);
+        java.lang.System.out.println("NMI : " + NMI);
+        java.lang.System.out.println("Time : " + (time / nn));
+//        java.lang.System.out.println(myGraph);
 
     }
 
 
     public void init() {
 
-        File myfile = new File("C:\\Users\\ehsan\\Desktop\\N1000MU.5\\network.txt");
+        File myfile = new File("/home/ehsan/Desktop/T/TestCase14-N100000-k20-mu50/network.txt");
         try {
-            Scanner scanner = new Scanner(myfile);
-            while(scanner.hasNextLine()) {
-                int source  = scanner.nextInt();
-                int destination = scanner.nextInt();
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(myfile));
+            String line = bufferedReader.readLine();
+            while(line != null) {
+                String[] nums = line.split(" ");
+                int source  = Integer.parseInt(nums[0]);
+                int destination = Integer.parseInt(nums[1]);
                 myGraph.addedge(source , destination);
+                line = bufferedReader.readLine();
             }
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -63,18 +79,21 @@ public class System {
 
 
     public int numnodes() {
-        File myfile = new File("C:\\Users\\ehsan\\Desktop\\N1000MU.5\\network.txt");
+        File myfile = new File("/home/ehsan/Desktop/T/TestCase14-N100000-k20-mu50/network.txt");
         int n = 0;
         int m = 0;
         try {
             Scanner scanner = new Scanner(myfile);
-            n = scanner.nextInt();
-            m = scanner.nextInt();
-            while(scanner.hasNextLine()) {
-                n = scanner.nextInt();
-                m = scanner.nextInt();
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(myfile));
+            String line = bufferedReader.readLine();
+            while(line != null) {
+                String[] nums = line.split(" ");
+                n = Integer.parseInt(nums[0]);
+                line = bufferedReader.readLine();
             }
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
